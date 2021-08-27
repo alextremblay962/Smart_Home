@@ -69,25 +69,28 @@ class Device {
         if(time){
             this.timerTime = time
         }
+
         if(callback){
-            this.callback = function(){
-                callback()
-            } 
+            this.timerCallback = callback
         }
     
         this.timer = setTimeout(()=>{
             console.log("timer")
-            this.callback() 
+            this.timerCallback() 
         },this.timerTime)
     }
     setTimerCallback(callback){
-        this.timerCallback = callback
+        this.timerCallback = callback()
     }
 
     resetTimer(){
         clearTimeout(this.timer)
         this.startTimer()
         
+    }
+
+    setTimerCallback(callbabk){
+        this.timerCallback = callbabk
     }
 }
 module.exports = Device

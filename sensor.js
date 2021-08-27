@@ -13,7 +13,7 @@ class Sensor extends Device {
 
     setValue(){
         
-        console.log("set " ,this.name," with val :" ,this.value)
+        console.log("set " ,this.name," with val :" ,this.val)
     }
     initValue() {
         return { value: 0 }
