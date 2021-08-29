@@ -5,6 +5,7 @@ class RGB_Light extends Light{
         super(name,  topic, client)
         this.color
         this.brighness
+        this.mode = 1 //1 => fixed RGB color , 2 => fading
     }
 
     setColor(color){
