@@ -28,7 +28,7 @@ class Device {
             })
         })
     }
-    static deviceCount = 0
+    //static deviceCount = 0
 
     //start the device with the valur in the device.json file
     startDevice() {
