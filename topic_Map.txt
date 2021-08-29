@@ -1,0 +1,2 @@
+PIR salon => L-MVusr05_oP/living_room/pir
+lumiere RGB tele L-MVusr05_oP/living_room/tv_light

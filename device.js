@@ -6,7 +6,7 @@ class Device {
         this.client = client
         this.callback = callback
         this.val = this.startDevice()
-        this.timer 
+        this.timer
         this.timerTime = 5000
         this.timerCallback
 
@@ -27,7 +27,7 @@ class Device {
             })
         })
     }
-    static deviceCount = 0  
+    static deviceCount = 0
     startDevice() {
         let fs = require('fs')
         var found = 0
@@ -65,31 +65,30 @@ class Device {
         return {}
     }
 
-    startTimer(time, callback){
-        if(time){
+    startTimer(time, callback) {
+        if (time) {
             this.timerTime = time
         }
 
-        if(callback){
+        if (callback) {
             this.timerCallback = callback
         }
-    
-        this.timer = setTimeout(()=>{
-            console.log("timer")
-            this.timerCallback() 
-        },this.timerTime)
+
+        this.timer = setTimeout(() => {
+            this.timerCallback()
+        }, this.timerTime)
     }
-    setTimerCallback(callback){
+    setTimerCallback(callback) {
         this.timerCallback = callback()
     }
 
-    resetTimer(){
+    resetTimer() {
         clearTimeout(this.timer)
         this.startTimer()
-        
+
     }
 
-    setTimerCallback(callbabk){
+    setTimerCallback(callbabk) {
         this.timerCallback = callbabk
     }
 }

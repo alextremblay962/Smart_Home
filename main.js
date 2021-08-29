@@ -4,14 +4,6 @@ const Light = require("./light.js")
 const RGB_Light = require("./RGB_light")
 const Sensor = require('./sensor')
 
-// const aedes = require('aedes')()
-// const server = require('net').createServer(aedes.handle)
-// const port = 1883
-
-// server.listen(port, function () {
-//   console.log('server started and listening on port ', port)
-// })
-
 var mqtt = require('mqtt')
 const { callbackify } = require("util")
 var client  = mqtt.connect('mqtt://test.mosquitto.org')
@@ -31,11 +23,11 @@ function LivingRoomCallback(){
 
   if(livingRoomPir.getValue() && tvBacklight.getColor() == "#000000"){
     tvBacklight.setColor("#FF0000")
-    //tvBacklight.setTimerCallback( )
-    var call1 = function(){
+    
+    tvBacklight.startTimer(10000,()=>{
       tvBacklight.setColor("#000000")
-    }
-    tvBacklight.startTimer(10000,call1)
+      console.log("=====callback")
+    })
   }
   else if(livingRoomPir.getValue() && tvBacklight.getColor()  != "#000000"){
     console.log("reset")
