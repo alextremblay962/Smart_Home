@@ -6,7 +6,7 @@
 SimpleTimer timer;
 
 //============= networking setting ===============
-#define MQTT_SERVER "192.168.16.12"
+#define MQTT_SERVER "test.mosquitto.org"
 #define port 1883
 const char* ssid = "103-961-Lamarche";
 const char* password = "LimeRouge16";
