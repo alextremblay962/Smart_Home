@@ -10,6 +10,7 @@ class Device {
         this.timerTime = 5000
         this.timerCallback
 
+        //init the MQTT connection of the divice and listen for change
         this.client.on('connect', () => {
             this.client.subscribe(this.topic, () => {
                 //console.log('client connected')
@@ -28,6 +29,8 @@ class Device {
         })
     }
     static deviceCount = 0
+
+    //start the device with the valur in the device.json file
     startDevice() {
         let fs = require('fs')
         var found = 0
@@ -40,8 +43,8 @@ class Device {
                     Device.deviceCount += 1
                 }
             })
-            if (!found) {
-                //console.log(this.name, " ===don't exist")
+            if (!found) { //if this device do not existe then it init. 
+                
                 let newDevice = {
                     "name": this.name,
                     "type": this.type,
@@ -56,20 +59,21 @@ class Device {
         })
     }
 
+    //sending mqtt to the acctual device
     sendMQTT(payload) {
         console.log('sending: ' + payload, 'to: ', this.topic)
         this.client.publish(this.topic, payload)
     }
 
     initValue() {
-        return {}
+        return {} // return the structure of the value
     }
 
+    //for timer callback time in sec callback 
     startTimer(time, callback) {
         if (time) {
-            this.timerTime = time
+            this.timerTime = time * 1000 //make time in second
         }
-
         if (callback) {
             this.timerCallback = callback
         }
@@ -78,20 +82,10 @@ class Device {
             this.timerCallback()
         }, this.timerTime)
     }
-    setTimerCallback(callback) {
-        this.timerCallback = callback()
-    }
 
     resetTimer() {
         clearTimeout(this.timer)
         this.startTimer()
-
     }
-
-    setTimerCallback(callbabk) {
-        this.timerCallback = callbabk
-    }
-
-
 }
 module.exports = Device
