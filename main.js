@@ -36,7 +36,6 @@ function LivingRoomCallback() {
     })
   }
   else if (livingRoomPir.getValue() && tvBacklight.getColor() != off) {
-    console.log("reset")
     tvBacklight.resetTimer()
   }
 }
