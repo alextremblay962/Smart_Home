@@ -26,7 +26,7 @@ let tvBacklight = new RGB_Light('rgb backlight',
 
 function LivingRoomCallback() {
   let off = "#000000"
-  let red = "#FF0000"
+  let red = "#FFF000"
   let blue = "#0000FF"
 
   if (livingRoomPir.getValue() && tvBacklight.getColor() == off) {
