@@ -4,6 +4,8 @@ const Light = require("./light.js")
 const RGB_Light = require("./RGB_light")
 const Sensor = require('./sensor')
 
+var firelink = require('./firelink')
+
 var mqtt = require('mqtt')
 const { callbackify } = require("util")
 var client  = mqtt.connect('mqtt://test.mosquitto.org')
@@ -23,10 +25,8 @@ function LivingRoomCallback(){
 
   if(livingRoomPir.getValue() && tvBacklight.getColor() == "#000000"){
     tvBacklight.setColor("#FF0000")
-    
     tvBacklight.startTimer(10000,()=>{
       tvBacklight.setColor("#000000")
-      console.log("=====callback")
     })
   }
   else if(livingRoomPir.getValue() && tvBacklight.getColor()  != "#000000"){

@@ -91,5 +91,7 @@ class Device {
     setTimerCallback(callbabk) {
         this.timerCallback = callbabk
     }
+
+
 }
 module.exports = Device
