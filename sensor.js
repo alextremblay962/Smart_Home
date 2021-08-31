@@ -3,8 +3,6 @@ const Device = require("./device.js")
 class Sensor extends Device {
     constructor(name, topic, client, callback) {
         super(name,  topic, client, callback)
-
-        
     }
 
     getValue(){
@@ -17,7 +15,6 @@ class Sensor extends Device {
     }
     initValue() {
         return { value: 0 }
-
     }
 }
 
