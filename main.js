@@ -3,7 +3,7 @@ const Device = require("./device.js")
 const Light = require("./light.js")
 const RGB_Light = require("./RGB_light")
 const Sensor = require('./sensor')
-var firelink = require('./firelink')
+//var firelink = require('./firelink')
 
 var mqtt = require('mqtt')
 const { callbackify } = require("util")
@@ -37,6 +37,7 @@ function LivingRoomCallback() {
   if(livingRoomLuxSensor.getValue() >= 100){
     console.log("onColor")
     onColor = "#FF0000"
+
   }
   else if(livingRoomLuxSensor.getValue() < 100){
     onColor = "#00FF00"
