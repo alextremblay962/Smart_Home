@@ -24,10 +24,7 @@ client.on('connect', function () {
 
 })
 
-
-
 client.on('message', function (topic, message) {
-    
     if (topic == 'update') {
         getData()
     }
