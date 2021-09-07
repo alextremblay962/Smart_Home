@@ -7,7 +7,7 @@ const Sensor = require('./sensor')
 
 var mqtt = require('mqtt')
 const { callbackify } = require("util")
-var client = mqtt.connect('mqtt://test.mosquitto.org')
+var client = mqtt.connect('mqtt://192.168.0.127')
 
 client.subscribe("update", (topic, message, packet) => {
   //console.log('update')
@@ -32,12 +32,9 @@ function LivingRoomCallback() {
   let off = "#000000"
   var onColor = "#0000FF"
 
- 
-
   if(livingRoomLuxSensor.getValue() >= 100){
     console.log("onColor")
     onColor = "#FF0000"
-
   }
   else if(livingRoomLuxSensor.getValue() < 100){
     onColor = "#00FF00"
@@ -47,7 +44,6 @@ function LivingRoomCallback() {
   }
 
   if (livingRoomPir.getValue() && tvBacklight.getColor() == off) {
-
     tvBacklight.setColor(onColor)
     tvBacklight.startTimer(30, () => {
       tvBacklight.setColor(off)
