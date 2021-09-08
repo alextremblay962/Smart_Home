@@ -7,7 +7,7 @@ const Sensor = require('./sensor')
 
 var mqtt = require('mqtt')
 const { callbackify } = require("util")
-var client = mqtt.connect('mqtt://192.168.16.25')
+var client = mqtt.connect('mqtt://192.168.0.127')
 
 client.subscribe("update", (topic, message, packet) => {
   //console.log('update')
