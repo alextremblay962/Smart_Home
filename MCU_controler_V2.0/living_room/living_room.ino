@@ -2,11 +2,13 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <SimpleTimer.h>
+#include <BH1750.h>
+#include <Wire.h>
 
 SimpleTimer timer;
 
 //============= networking setting ===============
-#define MQTT_SERVER "test.mosquitto.org"
+#define MQTT_SERVER "192.168.16.25"
 #define port 1883
 const char* ssid = "103-961-Lamarche";
 const char* password = "LimeRouge16";
@@ -18,20 +20,20 @@ PubSubClient client(MQTT_SERVER, port, callback, wifiClient);
 //=================================================
 
 // topic to subscribe //
-const char* SSR_topic = "room1/light1";
-const char* RGB_topic = "room1/RBG1";
-
+const char* T_RGB = "L-MVusr05_oP/living_room/tv_light";
+const char* T_PIR = "L-MVusr05_oP/living_room/pir";
+const char *T_lightevel = "L-MVusr05_oP/living_room/lux";
 const char* update_Topic = "update";
+
+
 
 long lastMsg = 0;
 char msg[20];
 
 #define redPin D6
 #define greenPin D7
-#define bluePin D5
-
-
-#define SSR_pin D8
+#define bluePin D8
+#define PIRPin D5
 
 int red = 0;
 int green = 0;
@@ -40,6 +42,8 @@ String prevColorStr;
 bool pirState = false;
 bool prevPirState = false;
 
+//BH1750 lightMeter;
+
 void setup()
 {
     Serial.begin(115200);
@@ -47,7 +51,8 @@ void setup()
     pinMode(redPin, OUTPUT);
     pinMode(greenPin, OUTPUT);
     pinMode(greenPin, OUTPUT);
-    pinMode(SSR_pin, OUTPUT);
+
+    Wire.begin();
 
     WiFi.persistent(false);
     WiFi.disconnect(true);
@@ -60,10 +65,18 @@ void setup()
     delay(2000);
     //=================================================
 
+      //================  BH1750 ======================
+  //lightMeter.begin();
+
     Serial.println("Running...");
     analogWrite(redPin, map(red, 0, 255, 0, 1023));
     analogWrite(greenPin, map(green, 0, 255, 0, 1023));
     analogWrite(bluePin, map(blue, 0, 255, 0, 1023));
+
+     //timer.setInterval(80L, send_lux);
+     timer.setInterval(80L, PIRupdate);
+
+     
 }
 
 void loop()
@@ -74,6 +87,9 @@ void loop()
     }
     // maintain MQTT connection
     client.loop();
+    //PIRupdate();
+
+    timer.run();
 
     delay(1);
 }
@@ -85,10 +101,10 @@ void callback(char* topic, byte* payload, unsigned int length)
     String strValue;
     int Intvalue;
 
-    // Print out some debugging info
-     Serial.println("Callback update.");
-     Serial.print("Topic: ");
-     Serial.println(topicStr);
+    //Print out some debugging info
+    Serial.println("Callback update.");
+    Serial.print("Topic: ");
+    Serial.println(topicStr);
 
     for (int i = 0; i < length; i++) {
         Serial.print((char)payload[i]);
@@ -98,24 +114,20 @@ void callback(char* topic, byte* payload, unsigned int length)
     Intvalue = strValue.toInt();
 
     Update_value(Intvalue, strValue, topicStr);
-    Serial.print("topic: ");
-    Serial.print(topicStr);
-    Serial.print("  value: ");
-    Serial.println(strValue);
 }
 
 void Update_value(int val, String strval, String topic)
 {
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonObject& root = jsonBuffer.parseObject(strval);
-
-    String colorstr = root["hex"];
-    String mode = root["mode"];
-    boolean state = root["state"];
 
     //for RGB
 
-    if (topic == RGB_topic) {
+    if (topic == T_RGB) {
+        StaticJsonBuffer<200> jsonBuffer;
+        JsonObject& root = jsonBuffer.parseObject(strval);
+
+        String colorstr = root["color"];
+        String mode = root["mode"];
+        boolean state = root["state"];
 
         Serial.print("state: ");
         Serial.println(state);
@@ -123,7 +135,7 @@ void Update_value(int val, String strval, String topic)
         Serial.println(mode);
         Serial.print("color: ");
         Serial.println(colorstr);
-        if (state) {
+        if (1) {
             if (colorstr[0] == '#') {
                 long color = (long)strtol(&colorstr[1], NULL, 16);
                 red = (color >> 16) & 0xff;
@@ -142,8 +154,6 @@ void Update_value(int val, String strval, String topic)
         analogWrite(redPin, map(red, 0, 255, 0, 1023));
         analogWrite(greenPin, map(green, 0, 255, 0, 1023));
         analogWrite(bluePin, map(blue, 0, 255, 0, 1023));
-    } else if (topic = SSR_topic) {
-        digitalWrite(SSR_pin , state);
     }
 }
 
@@ -151,11 +161,6 @@ void Update_value(int val, String strval, String topic)
 // networking functions
 void reconnect()
 {
-    digitalWrite(redPin, LOW);
-    digitalWrite(greenPin,LOW);
-    digitalWrite(bluePin,LOW);
-    digitalWrite(SSR_pin,LOW);
-    
     // WiFi connect
     if (WiFi.status() != WL_CONNECTED) {
         // debug printing
@@ -187,8 +192,7 @@ void reconnect()
                 Serial.println("\tMTQQ Connected");
                 //========================   topic to subscribe ========================
 
-                client.subscribe(SSR_topic);
-                client.subscribe(RGB_topic);
+                client.subscribe(T_RGB);
 
                 //========================   topic to subscribe ========================
 
@@ -217,3 +221,45 @@ String macToStr(const uint8_t* mac)
     }
     return result;
 }
+
+void PIRupdate()
+{
+    //Serial.println("PIR state change");
+    pirState = digitalRead(PIRPin);
+    String state = String(pirState);
+    String braket = "}";
+    String payload;
+
+    StaticJsonBuffer<200> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+
+    root["value"] = pirState;
+
+    root.printTo(payload);
+
+    if (pirState != prevPirState) {
+        client.publish(T_PIR, (char*)payload.c_str());
+        prevPirState = pirState;
+        Serial.print("PIR state change to : ");
+        Serial.println(pirState);
+    }
+    delay(50);
+}
+
+
+
+// int prevlux = 0;
+// void send_lux() {
+
+//   int lux = lightMeter.readLightLevel();
+
+//   if (lux - prevlux >= 5 || prevlux - lux >= 5) {
+//     client.publish(T_lightevel, (char *)String(lux).c_str());
+//     delay(500);
+
+//     Serial.print("light: ");
+//     Serial.println(lightMeter.readLightLevel());
+//     prevlux = lux;
+//   }
+// }
+
