@@ -16,7 +16,7 @@ client.subscribe("update", (topic, message, packet) => {
 //declare devices
 //living room
 var livingRoomPir = new Sensor('pir1',
-  'L-MVusr05_oP/living_room/pir',
+  'L-MVusr05_oP/main_room/pir',
   client, LivingRoomCallback)
 
 var tvBacklight = new RGB_Light('rgb backlight',
@@ -24,7 +24,7 @@ var tvBacklight = new RGB_Light('rgb backlight',
   client)
 
 var livingRoomLuxSensor = new Sensor("lux sensor",
- 'L-MVusr05_oP/living_room/lux',
+ 'L-MVusr05_oP/main_room/lux',
  client,LivingRoomCallback )
 //declare devices
 

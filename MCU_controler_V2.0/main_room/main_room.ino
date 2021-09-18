@@ -20,8 +20,8 @@ PubSubClient client(MQTT_SERVER, port, callback, wifiClient);
 //=================================================
 
 // topic to subscribe //
-const char* T_RGB = "L-MVusr05_oP/living_room/tv_light";
-const char* T_PIR = "L-MVusr05_oP/living_room/pir";
+const char* T_RGB = "L-MVusr05_oP/main_room/tv_light";
+const char* T_PIR = "L-MVusr05_oP/main_room/pir";
 const char* T_lightevel = "L-MVusr05_oP/main_room/lux";
 const char* update_Topic = "update";
 
