@@ -1,8 +1,8 @@
 #include <ArduinoJson.h>
+#include <BH1750.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <SimpleTimer.h>
-#include <BH1750.h>
 #include <Wire.h>
 
 SimpleTimer timer;
@@ -22,18 +22,16 @@ PubSubClient client(MQTT_SERVER, port, callback, wifiClient);
 // topic to subscribe //
 const char* T_RGB = "L-MVusr05_oP/living_room/tv_light";
 const char* T_PIR = "L-MVusr05_oP/living_room/pir";
-const char *T_lightevel = "L-MVusr05_oP/living_room/lux";
+const char* T_lightevel = "L-MVusr05_oP/living_room/lux";
 const char* update_Topic = "update";
-
-
 
 long lastMsg = 0;
 char msg[20];
 
 #define redPin D6
 #define greenPin D7
-#define bluePin D8
-#define PIRPin D5
+#define bluePin D5
+#define PIRPin D8
 
 int red = 0;
 int green = 0;
@@ -65,18 +63,16 @@ void setup()
     delay(2000);
     //=================================================
 
-      //================  BH1750 ======================
-  //lightMeter.begin();
+    //================  BH1750 ======================
+    //lightMeter.begin();
 
     Serial.println("Running...");
     analogWrite(redPin, map(red, 0, 255, 0, 1023));
     analogWrite(greenPin, map(green, 0, 255, 0, 1023));
     analogWrite(bluePin, map(blue, 0, 255, 0, 1023));
 
-     //timer.setInterval(80L, send_lux);
-     timer.setInterval(80L, PIRupdate);
-
-     
+    //timer.setInterval(80L, send_lux);
+    timer.setInterval(80L, PIRupdate);
 }
 
 void loop()
@@ -144,16 +140,14 @@ void Update_value(int val, String strval, String topic)
 
                 prevColorStr = colorstr;
             }
+            Serial.print("Green: ");
+            Serial.println(green);
 
-        } else {
-            red = 0;
-            green = 0;
-            blue = 0;
+            //output value
+            analogWrite(redPin, map(red, 0, 255, 0, 1023));
+            analogWrite(greenPin, map(green, 0, 255, 0, 1023));
+            analogWrite(bluePin, map(blue, 0, 255, 0, 1023));
         }
-        //output value
-        analogWrite(redPin, map(red, 0, 255, 0, 1023));
-        analogWrite(greenPin, map(green, 0, 255, 0, 1023));
-        analogWrite(bluePin, map(blue, 0, 255, 0, 1023));
     }
 }
 
@@ -246,8 +240,6 @@ void PIRupdate()
     delay(50);
 }
 
-
-
 // int prevlux = 0;
 // void send_lux() {
 
@@ -262,4 +254,3 @@ void PIRupdate()
 //     prevlux = lux;
 //   }
 // }
-

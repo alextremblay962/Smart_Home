@@ -71,7 +71,7 @@ void setup()
     analogWrite(greenPin, map(green, 0, 255, 0, 1023));
     analogWrite(bluePin, map(blue, 0, 255, 0, 1023));
 
-    timer.setInterval(80L, send_lux);
+    //timer.setInterval(80L, send_lux);
     timer.setInterval(80L, PIRupdate);
 }
 
@@ -234,6 +234,12 @@ void PIRupdate()
     root.printTo(payload);
 
     if (pirState != prevPirState) {
+
+        String a = "{\"value\":";
+        String b = "}";
+
+        String payload = a + String(pirState) + b;
+
         client.publish(T_PIR, (char*)payload.c_str());
         prevPirState = pirState;
         Serial.print("PIR state change to : ");
@@ -249,7 +255,12 @@ void send_lux()
     int lux = lightMeter.readLightLevel();
 
     if (lux - prevlux >= 5 || prevlux - lux >= 5) {
-        client.publish(T_lightevel, (char*)String(lux).c_str());
+
+        String a = "{\"value\":";
+        String b = "}";
+
+        String payload = a + String(lux) + b;
+        //client.publish(T_lightevel, (char*)payload.c_str());
         delay(500);
 
         Serial.print("light: ");
