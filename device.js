@@ -44,7 +44,7 @@ class Device {
                 }
             })
             if (!found) { //if this device do not existe then it init. 
-                
+
                 let newDevice = {
                     "name": this.name,
                     "type": this.type,

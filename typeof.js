@@ -6,4 +6,4 @@ client.subscribe("update", (topic, message, packet) => {
   //console.log('update')
 })
 
-//console.log( client)
+console.log(client.options)
